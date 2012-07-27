@@ -64,7 +64,7 @@ class Worker extends Actor {
       if(numElements == 0)
         accumulatedResult
       else {
-        val x = Math.pow(-1, elem) / (2 * elem + 1) 
+        val x = 4.0 * Math.pow(-1, elem) / (2 * elem + 1) 
         calc(elem + 1, numElements - 1, accumulatedResult + x)
       }
     }

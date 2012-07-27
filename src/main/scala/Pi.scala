@@ -26,8 +26,22 @@ case class Work(start: Int, numElements: Int) extends PiMessage
 case class Result(value: Double) extends PiMessage
 case class PiApproximation(piValue: Double, runTime: Duration)
 
-class Pi {
-
+object Pi extends App {
+  
+  def calculate(numWorkers: Int, numElements: Int, numMessages: Int) {
+    // Create our Akka System
+    val system = ActorSystem("PiSystem")
+    
+    // Create a result listener that will print out the result of calculating pi and then shut down the system
+    val listener = system.actorOf(Props[Listener], name="listener")
+    
+    // Create the master
+    val master = system.actorOf(Props(new Master(numWorkers, numElements, numMessages, listener)), name="master")
+    
+    master ! Calculate
+  }
+  
+  calculate(numWorkers = 4, numElements = 10000, numMessages = 10000)
 }
 
 /**
@@ -92,7 +106,7 @@ class Master(numWorkers: Int, numMessages: Int, numElements: Int, listener: Acto
 class Listener extends Actor {
   def receive = {
     case PiApproximation(pi, runTime) =>
-      println("\n\tThe value of pi is %s\n\tThat took %f to compute".format(pi, runTime))
+      println("\n\tThe value of pi is %s\n\tThat took %s to compute".format(pi, runTime))
       context.system.shutdown()
   }
 }

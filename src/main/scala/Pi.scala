@@ -85,6 +85,10 @@ class Master(numWorkers: Int, numMessages: Int, numElements: Int, listener: Acto
   }
 }
 
+/**
+ * Simple actor to listen to PiApproximation messages from the Master actor and report to stdout what the result
+ * of Pi and how long it took to compute it is
+ */
 class Listener extends Actor {
   def receive = {
     case PiApproximation(pi, runTime) =>

@@ -27,7 +27,14 @@ class Pi {
 
 }
 
-
+/**
+ * This Worker class is an Actor that knows how to calculate Pi using the formula:
+ * 
+ * SUM[n=0 --> INFINITY] of (-1)^n / (2n + 1)
+ * 
+ * To divide and conquer the domain space, this actor can take a starting index (n) and some 
+ * number of elements to compute (e.g. the Nth through the N+numElements values of the equation)
+ */
 class Worker extends Actor {
   def receive = {
     case Work(start, numElements) => 

@@ -73,6 +73,14 @@ class Master(numWorkers: Int, numMessages: Int, numElements: Int, listener: Acto
     Props[Worker].withRouter(RoundRobinRouter(numWorkers)), name="workerRouter")
   
   def receive = {
-    // handle messages
+    case Calculate =>
+      for (i <- 0 until numMessages) workerRouter ! Work(i * numElements, numElements)
+    case Result(value) =>
+      pi += value
+      numResults += 1
+      if(numResults == numMessages) {   // if every message we've sent out has returned, we're done.  Shut down the shop.
+        listener ! PiApproximation(pi, runTime = (System.currentTimeMillis - start).millis)
+        context.stop(self)
+      }
   }
 }

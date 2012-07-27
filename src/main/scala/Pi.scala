@@ -4,6 +4,9 @@ import akka.util.Duration
 import akka.util.duration._
 
 /**
+ * <p>Code (slightly modified) from the Intro Guide to Akka found: 
+ * http://doc.akka.io/docs/akka/2.0.2/intro/getting-started-first-scala.html</p>
+ * 
  * <p>We're going to have 3 Actors sending messages around:<br/>
  * <pre>
  *            [Master]        ---- PiApproximation ---->      [Listener]
@@ -52,5 +55,24 @@ class Worker extends Actor {
       }
     }
     calc(start, numElements, 0.0)
+  }
+}
+
+/**
+ * The Master
+ * @param numWorkers - how many Worker actors to setup
+ * @param numMessages - how many number chunks to send out to the workers
+ * @param numElements - how big each number chunk is sent to each worker
+ */
+class Master(numWorkers: Int, numMessages: Int, numElements: Int, listener: ActorRef) extends Actor {
+  var pi: Double = _
+  var numResults: Int = _
+  val start: Long = System.currentTimeMillis
+  
+  val workerRouter = context.actorOf(
+    Props[Worker].withRouter(RoundRobinRouter(numWorkers)), name="workerRouter")
+  
+  def receive = {
+    // handle messages
   }
 }

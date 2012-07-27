@@ -84,3 +84,11 @@ class Master(numWorkers: Int, numMessages: Int, numElements: Int, listener: Acto
       }
   }
 }
+
+class Listener extends Actor {
+  def receive = {
+    case PiApproximation(pi, runTime) =>
+      println("\n\tThe value of pi is %s\n\tThat took %f to compute".format(pi, runTime))
+      context.system.shutdown()
+  }
+}
